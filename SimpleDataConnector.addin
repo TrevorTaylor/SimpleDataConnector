@@ -1,0 +1,12 @@
+﻿<RevitAddIns>
+    <AddIn Type="Command">
+        <Name>SimpleDataConnector</Name>
+        <Assembly>SimpleDataConnector/SimpleDataConnector.dll</Assembly>
+        <AddInId>E0794704-818B-4392-89F7-3E862D6AEBB7</AddInId>
+        <FullClassName>SimpleDataConnector.Commands.StartupCommand</FullClassName>
+        <Text>SimpleDataConnector</Text>
+        <VendorId>Development</VendorId>
+        <VendorDescription></VendorDescription>
+        <VendorEmail></VendorEmail>
+    </AddIn>
+</RevitAddIns>
