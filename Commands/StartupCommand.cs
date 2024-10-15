@@ -15,50 +15,77 @@ namespace SimpleDataConnector.Commands
     [Transaction(TransactionMode.Manual)]
     public class StartupCommand : ExternalCommand
     {
+
         public override void Execute()
         {
-            //var viewModel = new SimpleDataConnectorViewModel();
-            //var view = new SimpleDataConnectorView(viewModel);
-            //view.ShowDialog();
+            //Basic_CRUD();
 
+            bool isRemoteDatabaseConnected = IsRemoteDatabaseConnected();
 
+            Console.ReadLine();
 
-            // CREATE
+            
+
+            Console.ReadLine();
+
+        }
+
+        private bool IsRemoteDatabaseConnected()
+        {
             using (var context = new SheetsDataContext())
             {
-                var sheet = new Sheet
+                try
                 {
-                    //SurveyID = 1,
-                    SheetNames = "Sheet1",
-                    SheetNumber = "S3.01",
-                    Scale = "1:100",
-                    DisciplineName = "Structure",
-                    AppearsInSheetList = 1,
-                    SheetIssueDate = DateTime.Now,
-                    RevisionsOnSheet = "Rev 1"
-                };
-                context.Sheets.Add(sheet);
-                context.SaveChanges();
-                Debug.WriteLine("Sheet added.");
-            }
-
-            // READ
-            using (var context = new SheetsDataContext())
-            {
-                var sheet = context.Sheets.FirstOrDefault(s => s.SheetNumber == "A2.01");
-                if (sheet != null)
+                    context.Database.CanConnect();
+                    return true;
+                }
+                catch (Exception ex)
                 {
-                    Debug.WriteLine($"Sheet found: {sheet.SheetNames}, {sheet.SheetNumber}");
+                    Debug.WriteLine(ex.Message);
+                    return false;
                 }
             }
+        }
+
+
+        public void Basic_CRUD()
+        {
+            using (var context = new SheetsDataContext())
+            {
+                // READ:
+                var sheet = context.Sheets.FirstOrDefault(s => s.SheetNumber == "S3.01");
+                if (sheet != null)
+                {
+                    Debug.WriteLine("Sheet added " + sheet.SheetNumber + " exists.");
+                }
+                else
+                {
+                    // CREATE:
+                    sheet = new Sheet
+                    {
+                        //SurveyID = 1,
+                        SheetNames = "Sheet1",
+                        SheetNumber = "S3.01",
+                        Scale = "1:100",
+                        DisciplineName = "Structure",
+                        AppearsInSheetList = 1,
+                        SheetIssueDate = DateTime.Now,
+                        RevisionsOnSheet = "Rev 1"
+                    };
+
+                    context.Sheets.Add(sheet);
+                    context.SaveChanges();
+                    Debug.WriteLine("Sheet added.");
+                };
+            }     
 
             // UPDATE
             using (var context = new SheetsDataContext())
             {
-                var sheet = context.Sheets.FirstOrDefault(s => s.SheetNumber == "A2.01");
+                var sheet = context.Sheets.FirstOrDefault(s => s.SheetNumber == "S3.01");
                 if (sheet != null)
                 {
-                    sheet.AppearsInSheetList = 1;
+                    sheet.RevisionsOnSheet = "Rev 2";
                     context.SaveChanges();
                     Debug.WriteLine("Sheet updated.");
                 }
@@ -74,9 +101,10 @@ namespace SimpleDataConnector.Commands
                     context.SaveChanges();
                     Debug.WriteLine("Sheet deleted.");
                 }
-
             }
         }
+
+
 
     }
 }

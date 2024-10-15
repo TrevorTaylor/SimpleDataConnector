@@ -81,4 +81,27 @@ namespace SimpleDataConnector.Data
             }
         }
     }
+
+    // SimpleDataConnector using SQLite for when the user doesn't have access to a SQL Server
+    public class SheetsDataContextSQLite : DbContext
+    {
+        public DbSet<Models.Sheet> Sheets { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                string directory = Directory.GetCurrentDirectory();
+                // Use appsettings.json for connection string                
+                // Create a file in your project and name it "appsettings.json"
+                // In Properties, set "Copy to Output Directory" to "Copy if newer"
+                // You can store all of the connection strings for your project in this json file.
+                var configuration = new ConfigurationBuilder() // Requires Microsoft.Extensions.Configuration
+                    .SetBasePath(Directory.GetCurrentDirectory()) // Requires System.IO & Microsoft.Extensions.Configuration.Json
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+                optionsBuilder.UseSqlite(configuration.GetConnectionString("SheetsDbConnectionString"));
+            }
+        }
+    }
 }
